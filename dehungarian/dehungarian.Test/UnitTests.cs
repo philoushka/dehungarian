@@ -36,17 +36,21 @@ namespace dehungarian.Test
     namespace ConsoleApplication1
     {
         class TypeName
-        {   
+        {
+            public void TestMethod()
+            {
+                string strTest = "";
+            }
         }
     }";
             var expected = new DiagnosticResult
             {
                 Id = DehungarianAnalyzer.DiagnosticId,
-                Message = String.Format("Type name '{0}' contains lowercase letters", "TypeName"),
+                Message = String.Format("Identifier '{0}' contains a Hungarian style prefix", "strTest"),
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
-                            new DiagnosticResultLocation("Test0.cs", 11, 15)
+                            new DiagnosticResultLocation("Test0.cs", 15, 20)
                         }
             };
 
@@ -62,8 +66,12 @@ namespace dehungarian.Test
 
     namespace ConsoleApplication1
     {
-        class TYPENAME
-        {   
+        class TypeName
+        {
+            public void TestMethod()
+            {
+                string someString = "";
+            }
         }
     }";
             VerifyCSharpFix(test, fixtest);
