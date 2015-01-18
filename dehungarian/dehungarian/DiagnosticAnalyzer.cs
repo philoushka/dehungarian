@@ -14,56 +14,54 @@ namespace dehungarian
     public class DehungarianAnalyzer : DiagnosticAnalyzer
     {
         public const string DiagnosticId = "dehungarian";
-        internal const string Title = "Identifier contains a Hungarian style prefix";
-        internal const string MessageFormat = "Identifier '{0}' contains a Hungarian style prefix";
-        internal const string Category = "Naming";
+        internal const string Title = "contains a Hungarian style prefix";
+        public const string LocalVariable = "Local variable";
+        public const string Parameter = "Parameter";
 
-        public static string[] HungarianPrefixes = new[] { "str", "s", "c", "ch", "n", "f", "i", "l", "p", "d", "b", "bln" };
-
-        internal static DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true);
+        public static string[] HungarianPrefixes = { "str", "s", "c", "ch", "n", "f", "i", "l", "p", "d", "b", "bln" };
+        internal static DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, "", "Naming", DiagnosticSeverity.Warning, isEnabledByDefault: true);
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
 
         public override void Initialize(AnalysisContext context)
         {
-            //problem: trying to have local variables, parameters, class fields, range variables
-            //unsure whether to use SymbolAction or SyntaxNodeAction.
-            //using SymbolKind.Local doesn't trigger for function local variables when I run+debug a console app
-            var symbolsToActOn = new[] { SymbolKind.Local, SymbolKind.Parameter, SymbolKind.Field, SymbolKind.RangeVariable }; //Enumerable.Range(0, 18).Select(x => (SymbolKind)Enum.ToObject(typeof(SymbolKind), x)).ToArray();
-            context.RegisterSymbolAction(AnalyzeSymbol, symbolsToActOn);
-
-            var syntaxTypes = new[] { SyntaxKind.IdentifierName, SyntaxKind.IdentifierToken, SyntaxKind.Parameter };
-            context.RegisterSyntaxNodeAction(AnalyzeSyntaxNode, syntaxTypes);
+            context.RegisterSyntaxNodeAction(AnalyzeSyntaxParameterNode, SyntaxKind.Parameter);
+            context.RegisterSyntaxNodeAction(AnalyzeSyntaxVariableNode, SyntaxKind.VariableDeclaration);
         }
-        private static void AnalyzeSyntaxNode(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeSyntaxParameterNode(SyntaxNodeAnalysisContext context)
         {
             try
             {
-                var namedTypeSymbol = (INamedTypeSymbol)context.Node;
-
-                if (IdentifierStartsWithHungarian(namedTypeSymbol.Name))
+                ParameterSyntax param = (ParameterSyntax)context.Node;
+                var foundHungarianPrefix = IdentifierStartsWithHungarian(param.Identifier.ToString());
+                if (foundHungarianPrefix.Length > 0)
                 {
-                    var diagnostic = Diagnostic.Create(Rule, namedTypeSymbol.Locations[0], namedTypeSymbol.Name);
+                    var rule = new DiagnosticDescriptor(DiagnosticId, "\{Parameter} \{Title}", "\{Parameter} '{0}' contains a Hungarian style prefix: '\{foundHungarianPrefix}'", Parameter, DiagnosticSeverity.Warning, isEnabledByDefault: true);
+                    var diagnostic = Diagnostic.Create(rule, param.GetLocation(), param.Identifier.ToString());
                     context.ReportDiagnostic(diagnostic);
                 }
             }
             catch (Exception) { }
         }
 
-        private static void AnalyzeSymbol(SymbolAnalysisContext context)
+        private static void AnalyzeSyntaxVariableNode(SyntaxNodeAnalysisContext context)
         {
             try
             {
-                var namedTypeSymbol = (INamedTypeSymbol)context.Symbol;
+                VariableDeclarationSyntax variable = (VariableDeclarationSyntax)context.Node;
+                string variableName = variable.Variables.First().Identifier.ToString();
 
-                if (IdentifierStartsWithHungarian(namedTypeSymbol.Name))
+                var foundHungarianPrefix = IdentifierStartsWithHungarian(variableName);
+                if (foundHungarianPrefix.Length > 0)
                 {
-                    var diagnostic = Diagnostic.Create(Rule, namedTypeSymbol.Locations[0], namedTypeSymbol.Name);
+                    var rule = new DiagnosticDescriptor(DiagnosticId, "\{Parameter} \{Title}", "\{LocalVariable} '{0}' contains a Hungarian style prefix: '\{foundHungarianPrefix}'", LocalVariable, DiagnosticSeverity.Warning, isEnabledByDefault: true);
+                    var diagnostic = Diagnostic.Create(rule, variable.GetLocation(), variableName);
                     context.ReportDiagnostic(diagnostic);
                 }
             }
             catch (Exception) { }
         }
+
 
         /// <summary>
         /// Determine if this identifier starts with a hungarian prefix. Checks the common hungarian prefixes.
@@ -72,17 +70,21 @@ namespace dehungarian
         /// Will positively identify (strCountry or iAmountOwing)
         /// but not strangeName, insider, boatName, or longRoad (str, i, b, and l respectively)
         /// </summary>
-        private static bool IdentifierStartsWithHungarian(string testIdentifier)
+        private static string IdentifierStartsWithHungarian(string testIdentifier)
         {
             //TODO refactor to use LINQ and Regex instead. Not happy with this current implementation
             foreach (var prefix in HungarianPrefixes)
             {
                 if (testIdentifier.StartsWith(prefix) || testIdentifier.StartsWith("_" + prefix))
                 {
-                    return char.IsUpper(testIdentifier.Substring(0, prefix.Length)[0]);  //todo: oops, take into account for length when is a field with underscore
+                    if (char.IsUpper(testIdentifier.Substring(prefix.Length, 1)[0]))
+                    //todo: oops, take into account for length when is a field with underscore
+                    {
+                        return prefix;
+                    }
                 }
             }
-            return false;
+            return "";
         }
 
         /// <summary>
@@ -96,13 +98,11 @@ namespace dehungarian
             {
                 if (identifierToRename.StartsWith(prefix))
                 {
-                    string newIdentifier = identifierToRename.Substring(0, prefix.Length);
+                    string newIdentifier = identifierToRename.Substring(prefix.Length);
                     return newIdentifier[0].ToString().ToLower() + newIdentifier.Substring(1);
                 }
             }
-
             return identifierToRename;
         }
-
     }
 }
