@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="dehungarian.Vsix..c7f6148f-43a7-4787-ab00-5f4b8a8352b9" Version="1.0" Language="en-US" Publisher="Phil Campbell"/>
+    <Identity Id="dehungarian.Vsix..c7f6148f-43a7-4787-ab00-5f4b8a8352b9" Version="1.0.1" Language="en-US" Publisher="Phil Campbell"/>
     <DisplayName>dehungarian</DisplayName>
     <Description xml:space="preserve">Finds and suggests renaming for local variables and method parameters that use Hungarian naming schemes.</Description>
     <MoreInfo>https://github.com/philoushka/dehungarian</MoreInfo>
