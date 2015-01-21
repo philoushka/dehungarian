@@ -34,7 +34,7 @@ namespace dehungarian
             var diagnostic = context.Diagnostics.First();
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
-            switch (diagnostic.Category)
+            switch (diagnostic.Descriptor.Category)
             {
                 case DehungarianAnalyzer.Parameter:
                     var paramToken = root.FindToken(diagnosticSpan.Start).Parent.AncestorsAndSelf().OfType<ParameterSyntax>().First();
