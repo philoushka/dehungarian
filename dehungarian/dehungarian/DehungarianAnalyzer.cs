@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace dehungarian
 {
-    [DiagnosticAnalyzer(LanguageNames.CSharp)]
+    [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public class DehungarianAnalyzer : DiagnosticAnalyzer
     {
         public const string DiagnosticId = "dehungarian";
@@ -16,7 +16,7 @@ namespace dehungarian
         public const string LocalVariable = "Local variable";
         public const string Parameter = "Parameter";
 
-        public static string[] HungarianPrefixes = { "str", "s", "c", "ch", "n", "f", "i", "l", "p", "d", "b", "bln" };
+        public static string[] HungarianPrefixes = { "str", "s", "c", "ch", "n", "f", "i", "l", "p", "d", "b", "bln", "o", "obj" };
         internal static DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, "", "Naming", DiagnosticSeverity.Warning, isEnabledByDefault: true);
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
@@ -109,6 +109,6 @@ namespace dehungarian
             {
                 return identifierToRename;
             }
-        }        
+        }
     }
 }
