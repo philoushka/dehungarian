@@ -12,7 +12,7 @@ using Microsoft.CodeAnalysis.Rename;
 
 namespace dehungarian
 {
-    [ExportCodeFixProvider(LanguageNames.CSharp, LanguageNames.VisualBasic, Name = nameof(DehungarianCodeFixProvider)), Shared]
+    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(DehungarianCodeFixProvider)), Shared]
     public class DehungarianCodeFixProvider : CodeFixProvider
     {
         public sealed override ImmutableArray<string> FixableDiagnosticIds

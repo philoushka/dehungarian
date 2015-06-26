@@ -1,18 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22310.1
+VisualStudioVersion = 14.0.22823.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dehungarian", "dehungarian\dehungarian\dehungarian.csproj", "{6CABBB2E-8CC2-4398-A88A-DA96D8CFBF3F}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{34BA88FD-CD36-48ED-8DCD-DEAD257BEA12}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dehungarian.Test", "dehungarian\dehungarian.Test\dehungarian.Test.csproj", "{B5609316-5988-4B54-A168-2060959F0E0F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dehungarian", "dehungarian\dehungarian\dehungarian.csproj", "{98569C68-329E-4CEF-91B1-F6FA9605BDB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dehungarian.Vsix", "dehungarian\dehungarian.Vsix\dehungarian.Vsix.csproj", "{2F524861-5D3D-47C9-B5D0-6C2A6DFCBC98}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dehungarian.Vsix", "dehungarian\dehungarian.Vsix\dehungarian.Vsix.csproj", "{7C07C82F-9252-46DC-89BB-9A5811A48492}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,18 +18,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6CABBB2E-8CC2-4398-A88A-DA96D8CFBF3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6CABBB2E-8CC2-4398-A88A-DA96D8CFBF3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6CABBB2E-8CC2-4398-A88A-DA96D8CFBF3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6CABBB2E-8CC2-4398-A88A-DA96D8CFBF3F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B5609316-5988-4B54-A168-2060959F0E0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B5609316-5988-4B54-A168-2060959F0E0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B5609316-5988-4B54-A168-2060959F0E0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B5609316-5988-4B54-A168-2060959F0E0F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2F524861-5D3D-47C9-B5D0-6C2A6DFCBC98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2F524861-5D3D-47C9-B5D0-6C2A6DFCBC98}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2F524861-5D3D-47C9-B5D0-6C2A6DFCBC98}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2F524861-5D3D-47C9-B5D0-6C2A6DFCBC98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98569C68-329E-4CEF-91B1-F6FA9605BDB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98569C68-329E-4CEF-91B1-F6FA9605BDB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98569C68-329E-4CEF-91B1-F6FA9605BDB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98569C68-329E-4CEF-91B1-F6FA9605BDB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C07C82F-9252-46DC-89BB-9A5811A48492}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C07C82F-9252-46DC-89BB-9A5811A48492}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C07C82F-9252-46DC-89BB-9A5811A48492}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C07C82F-9252-46DC-89BB-9A5811A48492}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
