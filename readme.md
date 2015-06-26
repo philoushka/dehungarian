@@ -27,7 +27,26 @@ Use this extension to automatically rename all identifiers quickly and accuratel
 - finds variables and method parameters with common hungarian prefixes
    `str`, `s`, `c`, `ch`, `n`, `f`, `i`, `l`, `p`, `d`, `b`, `bln`, `o`, `obj` 
 - takes the remainder of the variable name and renames the identifier.
+- ignores variables who aren't camelCased and/or those without a capital letter immediately following the prefix.
+- removes the prefix, and lower-cases the first char of the remaining variable name. The implicit assumption is that the variable is well named after the hungarian prefix.
 
 ### Renaming Examples
 
+Your Variable  | Renamed To
+------------- | -------------
+`strCustomerName`  | `customerName`
+`sFullName`| `fullName`
+`objReturnVal`| `returnVal`
+`bHasRedBalloons`| `hasRedBalloons`
+`cQuote`| `quote`
+`fAmountRefunded`| `amountRefunded`
 
+### Ignored Variables
+
+These will be ignored and not identified for renaming.
+
+- `strcustomer` because this is not camel cased.
+- `strangeName` because it's not exactly `str` followed by a capital letter.
+- `insider`
+- `boatName`
+- `longRoad`
