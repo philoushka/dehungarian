@@ -11,9 +11,8 @@
     <Tags>refactor refactoring hungarian naming</Tags>
   </Metadata>
   <Installation>
-    <InstallationTarget Version="[15.0)" Id="Microsoft.VisualStudio.Premium" />
-    <InstallationTarget Version="[15.0)" Id="Microsoft.VisualStudio.Ultimate" />
-    <InstallationTarget Version="[15.0)" Id="Microsoft.VisualStudio.Pro" />
+    <InstallationTarget Version="[14.0,15.0)" Id="Microsoft.VisualStudio.Pro" />
+    <InstallationTarget Version="[14.0,15.0)" Id="Microsoft.VisualStudio.Enterprise" />
   </Installation>
   <Dependencies>
     <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5)" />
