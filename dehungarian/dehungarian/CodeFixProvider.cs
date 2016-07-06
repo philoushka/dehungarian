@@ -1,11 +1,14 @@
-﻿using System.Collections.Immutable;
+﻿// dehungarian - Copyright (c) 2016 CaptiveAire
+
+using System.Collections.Immutable;
 using System.Composition;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CodeActions;
+using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Rename;
@@ -15,10 +18,7 @@ namespace dehungarian
     [ExportCodeFixProvider(LanguageNames.CSharp, LanguageNames.VisualBasic, Name = nameof(DehungarianCodeFixProvider)), Shared]
     public class DehungarianCodeFixProvider : CodeFixProvider
     {
-        public sealed override ImmutableArray<string> FixableDiagnosticIds
-        {
-            get { return ImmutableArray.Create(DehungarianAnalyzer.DiagnosticId); }
-        }
+        public sealed override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(DehungarianAnalyzer.DiagnosticId);
 
         public sealed override FixAllProvider GetFixAllProvider()
         {
@@ -38,22 +38,24 @@ namespace dehungarian
                     var paramToken = root.FindToken(diagnosticSpan.Start).Parent.AncestorsAndSelf().OfType<ParameterSyntax>().First();
 
                     context.RegisterCodeFix(
-                        CodeAction.Create(RemoveHungarianPrefixCommand, c => RemoveHungarianPrefix(context.Document, paramToken, c)),
+                        CodeAction.Create(RemoveHungarianPrefixCommand, c => this.RemoveHungarianPrefix(context.Document, paramToken, c)),
                         diagnostic);
                     break;
                 case DehungarianAnalyzer.LocalVariable:
-                    var variableToken = root.FindToken(diagnosticSpan.Start).Parent.AncestorsAndSelf().OfType<VariableDeclarationSyntax>().First();
+                    var variableToken =
+                        root.FindToken(diagnosticSpan.Start).Parent.AncestorsAndSelf().OfType<VariableDeclarationSyntax>().First();
 
                     context.RegisterCodeFix(
-                        CodeAction.Create(RemoveHungarianPrefixCommand, c => RemoveHungarianPrefix(context.Document, variableToken, c)),
+                        CodeAction.Create(RemoveHungarianPrefixCommand, c => this.RemoveHungarianPrefix(context.Document, variableToken, c)),
                         diagnostic);
-                    break;
-                default:
                     break;
             }
         }
 
-        private async Task<Solution> RemoveHungarianPrefix(Document document, VariableDeclarationSyntax token, CancellationToken cancellationToken)
+        private async Task<Solution> RemoveHungarianPrefix(
+            Document document,
+            VariableDeclarationSyntax token,
+            CancellationToken cancellationToken)
         {
             var identifierToken = token.Variables.First();
             var newName = DehungarianAnalyzer.SuggestDehungarianName(identifierToken.Identifier.Text);
@@ -61,7 +63,10 @@ namespace dehungarian
             var tokenSymbol = semanticModel.GetDeclaredSymbol(token.Variables.First(), cancellationToken);
             var originalSolution = document.Project.Solution;
             var optionSet = originalSolution.Workspace.Options;
-            var newSolution = await Renamer.RenameSymbolAsync(document.Project.Solution, tokenSymbol, newName, optionSet, cancellationToken).ConfigureAwait(false);
+            var newSolution =
+                await
+                Renamer.RenameSymbolAsync(document.Project.Solution, tokenSymbol, newName, optionSet, cancellationToken)
+                    .ConfigureAwait(false);
             return newSolution;
         }
 
@@ -72,8 +77,11 @@ namespace dehungarian
             var tokenSymbol = semanticModel.GetDeclaredSymbol(token, cancellationToken);
             var originalSolution = document.Project.Solution;
             var optionSet = originalSolution.Workspace.Options;
-            var newSolution = await Renamer.RenameSymbolAsync(document.Project.Solution, tokenSymbol, newName, optionSet, cancellationToken).ConfigureAwait(false);
+            var newSolution =
+                await
+                Renamer.RenameSymbolAsync(document.Project.Solution, tokenSymbol, newName, optionSet, cancellationToken)
+                    .ConfigureAwait(false);
             return newSolution;
-        }        
+        }
     }
 }

@@ -19,7 +19,7 @@ namespace dehungarian
         public static string[] HungarianPrefixes = { "str", "s", "c", "ch", "n", "f", "i", "l", "p", "d", "b", "bln", "o", "obj" };
         internal static DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, "", "Naming", DiagnosticSeverity.Warning, isEnabledByDefault: true);
 
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         public override void Initialize(AnalysisContext context)
         {
@@ -75,13 +75,12 @@ namespace dehungarian
             {
                 return "";
             }
-            string regexStartsWithHungarianCamelCased = string.Format("^_?({0})[A-Z]", CollapseAllHungarianPrefixesForRegexUsage());
+
+            string regexStartsWithHungarianCamelCased = $"^_?({CollapseAllHungarianPrefixesForRegexUsage()})[A-Z]";
+
             var matched = Regex.Match(testIdentifier, regexStartsWithHungarianCamelCased);
-            if (matched.Success)
-            {
-                return matched.Value.Substring(0, matched.Value.Length - 1);
-            }
-            return "";
+
+            return matched.Success ? matched.Value.Substring(0, matched.Value.Length - 1) : "";
         }
 
         private static string CollapseAllHungarianPrefixesForRegexUsage()
@@ -95,15 +94,16 @@ namespace dehungarian
         /// </summary>
         public static string SuggestDehungarianName(string identifierToRename)
         {
-            string regexStartsWithHungarianCamelCased = string.Format("^_?({0})[A-Z]", CollapseAllHungarianPrefixesForRegexUsage());
+            string regexStartsWithHungarianCamelCased = $"^_?({CollapseAllHungarianPrefixesForRegexUsage()})[A-Z]";
+
             var matched = Regex.Match(identifierToRename, regexStartsWithHungarianCamelCased);
+
             if (matched.Success)
             {
                 string firstCharOfNewName = matched.Value.Substring(matched.Value.Length - 1).ToLower();
-                return string.Format("{0}{1}{2}",
-                   (identifierToRename.StartsWith("_") ? "_" : ""),
-                   firstCharOfNewName,
-                   identifierToRename.Substring(matched.Length));
+                string prefix = identifierToRename.StartsWith("_") ? "_" : "";
+
+                return $"{prefix}{firstCharOfNewName}{identifierToRename.Substring(matched.Length)}";
             }
 
             return identifierToRename;
