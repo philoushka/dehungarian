@@ -105,10 +105,8 @@ namespace dehungarian
                    firstCharOfNewName,
                    identifierToRename.Substring(matched.Length));
             }
-            else
-            {
-                return identifierToRename;
-            }
+
+            return identifierToRename;
         }
     }
 }
