@@ -18,16 +18,21 @@ namespace dehungarian
     [ExportCodeFixProvider(LanguageNames.CSharp, LanguageNames.VisualBasic, Name = nameof(DehungarianCodeFixProvider)), Shared]
     public class DehungarianCodeFixProvider : CodeFixProvider
     {
-        public sealed override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(DehungarianAnalyzer.DiagnosticId);
+        const string Title = "Remove Hungarian Prefix";
+
+        public sealed override ImmutableArray<string> FixableDiagnosticIds
+        {
+            get { return ImmutableArray.Create(DehungarianAnalyzer.DiagnosticId); }
+        }
 
         public sealed override FixAllProvider GetFixAllProvider()
         {
+            // See https://github.com/dotnet/roslyn/blob/master/docs/analyzers/FixAllProvider.md for more information on Fix All Providers
             return WellKnownFixAllProviders.BatchFixer;
         }
 
         public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
-            const string RemoveHungarianPrefixCommand = "Remove Hungarian prefix";
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
             var diagnostic = context.Diagnostics.First();
             var diagnosticSpan = diagnostic.Location.SourceSpan;
@@ -38,7 +43,7 @@ namespace dehungarian
                     var paramToken = root.FindToken(diagnosticSpan.Start).Parent.AncestorsAndSelf().OfType<ParameterSyntax>().First();
 
                     context.RegisterCodeFix(
-                        CodeAction.Create(RemoveHungarianPrefixCommand, c => this.RemoveHungarianPrefix(context.Document, paramToken, c)),
+                        CodeAction.Create(Title, c => this.RemoveHungarianPrefix(context.Document, paramToken, c), Title),
                         diagnostic);
                     break;
                 case DehungarianAnalyzer.LocalVariable:
@@ -46,8 +51,10 @@ namespace dehungarian
                         root.FindToken(diagnosticSpan.Start).Parent.AncestorsAndSelf().OfType<VariableDeclarationSyntax>().First();
 
                     context.RegisterCodeFix(
-                        CodeAction.Create(RemoveHungarianPrefixCommand, c => this.RemoveHungarianPrefix(context.Document, variableToken, c)),
+                        CodeAction.Create(Title, c => this.RemoveHungarianPrefix(context.Document, variableToken, c), Title),
                         diagnostic);
+                    break;
+                default:
                     break;
             }
         }
