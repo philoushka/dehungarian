@@ -33,7 +33,7 @@ namespace dehungarian
             {
                 ParameterSyntax param = (ParameterSyntax)context.Node;
                 var foundHungarianPrefix = FindHungarianPrefix(param.Identifier.ToString());
-                if (foundHungarianPrefix.Length > 0)
+                if (!string.IsNullOrEmpty(foundHungarianPrefix))
                 {
                     var rule = new DiagnosticDescriptor(DiagnosticId, $"{Parameter} {Title}", $"{Parameter} '{{0}}' contains a Hungarian style prefix: '{foundHungarianPrefix}'", Parameter, DiagnosticSeverity.Warning, isEnabledByDefault: true);
                     var diagnostic = Diagnostic.Create(rule, param.GetLocation(), param.Identifier.ToString());
@@ -51,7 +51,7 @@ namespace dehungarian
                 string variableName = variable.Variables.First().Identifier.ToString();
 
                 var foundHungarianPrefix = FindHungarianPrefix(variableName);
-                if (foundHungarianPrefix.Length > 0)
+                if (!string.IsNullOrEmpty(foundHungarianPrefix))
                 {
                     var rule = new DiagnosticDescriptor(DiagnosticId, $"{Parameter} {Title}", $"{LocalVariable} '{{0}}' contains a Hungarian style prefix: '{foundHungarianPrefix}'", LocalVariable, DiagnosticSeverity.Warning, isEnabledByDefault: true);
                     var diagnostic = Diagnostic.Create(rule, variable.GetLocation(), variableName);

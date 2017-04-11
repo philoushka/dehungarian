@@ -61,6 +61,8 @@
     <ProjectReference Include="..\dehungarian\dehungarian.csproj">
       <Project>{98569c68-329e-4cef-91b1-f6fa9605bdb3}</Project>
       <Name>dehungarian</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
