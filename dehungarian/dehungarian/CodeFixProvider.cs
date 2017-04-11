@@ -34,25 +34,40 @@ namespace dehungarian
         public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
-            var diagnostic = context.Diagnostics.First();
-            var diagnosticSpan = diagnostic.Location.SourceSpan;
+
+            var diagnostic = context.Diagnostics.FirstOrDefault();
+
+            var diagnosticSpan = diagnostic?.Location?.SourceSpan;
+
+            if (diagnosticSpan == null)
+            {
+                return;
+            }
 
             switch (diagnostic.Descriptor.Category)
             {
                 case DehungarianAnalyzer.Parameter:
-                    var paramToken = root.FindToken(diagnosticSpan.Start).Parent.AncestorsAndSelf().OfType<ParameterSyntax>().First();
+                    var paramToken = root.FindToken(diagnosticSpan.Value.Start).Parent.AncestorsAndSelf().OfType<ParameterSyntax>().FirstOrDefault();
 
-                    context.RegisterCodeFix(
-                        CodeAction.Create(Title, c => this.RemoveHungarianPrefix(context.Document, paramToken, c), Title),
-                        diagnostic);
+                    if (paramToken != null)
+                    {
+                        context.RegisterCodeFix(
+                            CodeAction.Create(Title, c => this.RemoveHungarianPrefix(context.Document, paramToken, c), Title),
+                            diagnostic);
+                    }
+
                     break;
                 case DehungarianAnalyzer.LocalVariable:
                     var variableToken =
-                        root.FindToken(diagnosticSpan.Start).Parent.AncestorsAndSelf().OfType<VariableDeclarationSyntax>().First();
+                        root.FindToken(diagnosticSpan.Value.Start).Parent.AncestorsAndSelf().OfType<VariableDeclarationSyntax>().FirstOrDefault();
 
-                    context.RegisterCodeFix(
-                        CodeAction.Create(Title, c => this.RemoveHungarianPrefix(context.Document, variableToken, c), Title),
-                        diagnostic);
+                    if (variableToken != null)
+                    {
+                        context.RegisterCodeFix(
+                            CodeAction.Create(Title, c => this.RemoveHungarianPrefix(context.Document, variableToken, c), Title),
+                            diagnostic);
+                    }
+
                     break;
                 default:
                     break;
