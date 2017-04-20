@@ -17,6 +17,8 @@ namespace dehungarian
         public const string Parameter = "Parameter";
 
         public static string[] HungarianPrefixes = { "str", "s", "c", "ch", "n", "f", "i", "l", "p", "d", "b", "bln", "o", "obj" };
+        public static readonly Regex PrefixMatch = new Regex($"^_?({string.Join("|", HungarianPrefixes)})[A-Z]", RegexOptions.Singleline);
+
         internal static DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, "", "Naming", DiagnosticSeverity.Warning, isEnabledByDefault: true);
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
@@ -33,7 +35,7 @@ namespace dehungarian
             {
                 ParameterSyntax param = (ParameterSyntax)context.Node;
                 var foundHungarianPrefix = FindHungarianPrefix(param.Identifier.ToString());
-                if (foundHungarianPrefix.Length > 0)
+                if (!string.IsNullOrEmpty(foundHungarianPrefix))
                 {
                     var rule = new DiagnosticDescriptor(DiagnosticId, $"{Parameter} {Title}", $"{Parameter} '{{0}}' contains a Hungarian style prefix: '{foundHungarianPrefix}'", Parameter, DiagnosticSeverity.Warning, isEnabledByDefault: true);
                     var diagnostic = Diagnostic.Create(rule, param.GetLocation(), param.Identifier.ToString());
@@ -51,7 +53,7 @@ namespace dehungarian
                 string variableName = variable.Variables.First().Identifier.ToString();
 
                 var foundHungarianPrefix = FindHungarianPrefix(variableName);
-                if (foundHungarianPrefix.Length > 0)
+                if (!string.IsNullOrEmpty(foundHungarianPrefix))
                 {
                     var rule = new DiagnosticDescriptor(DiagnosticId, $"{Parameter} {Title}", $"{LocalVariable} '{{0}}' contains a Hungarian style prefix: '{foundHungarianPrefix}'", LocalVariable, DiagnosticSeverity.Warning, isEnabledByDefault: true);
                     var diagnostic = Diagnostic.Create(rule, variable.GetLocation(), variableName);
@@ -76,16 +78,9 @@ namespace dehungarian
                 return "";
             }
 
-            string regexStartsWithHungarianCamelCased = $"^_?({CollapseAllHungarianPrefixesForRegexUsage()})[A-Z]";
-
-            var matched = Regex.Match(testIdentifier, regexStartsWithHungarianCamelCased);
+            var matched = PrefixMatch.Match(testIdentifier);
 
             return matched.Success ? matched.Value.Substring(0, matched.Value.Length - 1) : "";
-        }
-
-        private static string CollapseAllHungarianPrefixesForRegexUsage()
-        {
-            return string.Join("|", HungarianPrefixes);
         }
 
         /// <summary>
@@ -94,9 +89,7 @@ namespace dehungarian
         /// </summary>
         public static string SuggestDehungarianName(string identifierToRename)
         {
-            string regexStartsWithHungarianCamelCased = $"^_?({CollapseAllHungarianPrefixesForRegexUsage()})[A-Z]";
-
-            var matched = Regex.Match(identifierToRename, regexStartsWithHungarianCamelCased);
+            var matched = PrefixMatch.Match(identifierToRename);
 
             if (matched.Success)
             {
